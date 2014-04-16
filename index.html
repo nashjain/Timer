@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+    <title>Activity Timer</title>
+    <script src="jquery-1.6.2.min.js"></script>
+    <script src="timer.js"></script>
+    <script src="beep.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            timer.init({
+                on_tick: function (display_time) {
+                    $("#timer").text(display_time);
+                    document.title = display_time + " left...";
+                },
+                30: function () {
+                    $('body').addClass("warn")
+                },
+                0: function () {
+                    $('body').addClass("done").removeClass("warn");
+                    beep_sound.start('#beep');
+                },
+                '-15': function () {
+                    full_reset();
+                }
+            });
+
+            $("#timer").click(function () {
+                timer.pause();
+                beep_sound.pause();
+            });
+
+            function full_reset(){
+                $('body').removeClass('done warn');
+                beep_sound.reset();
+                timer.reset();
+            }
+
+            $("#reset").click(function (){
+                full_reset();
+            });
+        });
+    </script>
+    <style type="text/css">
+        html {
+            height: 100%;
+            font-family: sans-serif;
+        }
+
+        #timer {
+            margin: auto;
+            width: 50%;
+            height: 50%;
+            vertical-align: middle;
+            text-align: center;
+            display: block;
+            font-size: 20em;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        #timer:hover {
+            cursor: pointer !important;
+        }
+
+        body {
+            color: #eee;
+            background-color: #000;
+            margin: 0;
+            height: 100%;
+        }
+
+        body.warn {
+            color: #f33;
+            background-color: #000;
+        }
+
+        body.done {
+            color: #000;
+            background-color: #f33;
+        }
+    </style>
+</head>
+<body>
+<audio id="beep" style="display:none; float: left" preload="auto" controls>
+    <source src="sound/beep.mp3" type="audio/mpeg">
+    <source src="sound/beep.ogg" type="audio/ogg">
+</audio>
+<div id="reset" style="text-align: right"><img src="reset.png"></div>
+<div id="timer"><span style="font-size: 0.1em; vertical-align: middle">Click here to Start</span></div>
+</body>
+</html>
